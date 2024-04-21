@@ -17,7 +17,7 @@
 //! function name. Run tests with `GOLDIE_UPDATE=true` to automatically update
 //! golden files.
 //!
-//! ```
+//! ```rust,no_run
 //! #[test]
 //! fn example() {
 //!     let text = { /* ... run the test ... */ };
@@ -35,7 +35,7 @@
 //! You cannot use  `GOLDIE_UPDATE=true` to automatically update templated golden
 //! files.
 //!
-//! ```
+//! ```rust,no_run
 //! #[test]
 //! fn example() {
 //!     let text = { /* ... run the test ... */ };
@@ -219,7 +219,8 @@ impl Goldie {
         let expected = ENGINE
             .compile(&contents)
             .with_context(|| self.error("failed to compile golden file template"))?
-            .render(&ctx)
+            .render(&ENGINE, &ctx)
+            .to_string()
             .with_context(|| self.error("failed to render golden file template"))?;
 
         pretty_assertions::assert_eq!(
@@ -264,12 +265,12 @@ impl Goldie {
     }
 
     fn error(&self, msg: &str) -> String {
-        use yansi::Color;
+        use yansi::Paint;
         format!(
             "\n\n{}: {}\nrun with {} to regenerate the golden file\n\n",
-            Color::Red.paint(msg),
+            msg.red(),
             self.golden_file.display(),
-            Color::Blue.paint("GOLDIE_UPDATE=1").bold(),
+            "GOLDIE_UPDATE=1".blue().bold(),
         )
     }
 }

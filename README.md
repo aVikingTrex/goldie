@@ -26,7 +26,7 @@ filename will be automatically determined based on the test file and test
 function name. Run tests with `GOLDIE_UPDATE=true` to automatically update
 golden files.
 
-```rust
+```rust,no_run
 #[test]
 fn example() {
     let text = { /* ... run the test ... */ };
@@ -44,7 +44,7 @@ order to render the template. Values are rendered using
 You cannot use  `GOLDIE_UPDATE=true` to automatically update templated golden
 files.
 
-```rust
+```rust,no_run
 #[test]
 fn example() {
     let text = { /* ... run the test ... */ };
