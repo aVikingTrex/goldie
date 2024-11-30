@@ -66,6 +66,12 @@ use serde::{Deserialize, Serialize};
 /// Assert the golden file matches.
 #[macro_export]
 macro_rules! assert {
+    ($goldie_path: expr, $actual: expr) => {{
+        let g = $crate::_new_goldie!($goldie_path);
+        if let Err(err) = g.assert($actual) {
+            ::std::panic!("{}", err);
+        }
+    }};
     ($actual:expr) => {{
         let g = $crate::_new_goldie!();
         if let Err(err) = g.assert($actual) {
@@ -83,11 +89,23 @@ macro_rules! assert_debug {
             ::std::panic!("{}", err);
         }
     }};
+    ($goldie_path: expr, $actual:expr) => {{
+        let g = $crate::_new_goldie!($goldie_path);
+        if let Err(err) = g.assert_debug($actual) {
+            ::std::panic!("{}", err);
+        }
+    }};
 }
 
 /// Assert the templated golden file matches.
 #[macro_export]
 macro_rules! assert_template {
+    ($goldie_path: expr, $ctx:expr , $actual:expr) => {{
+        let g = $crate::_new_goldie!($goldie_path);
+        if let Err(err) = g.assert_template($ctx, $actual) {
+            ::std::panic!("{}", err);
+        }
+    }};
     ($ctx:expr, $actual:expr) => {{
         let g = $crate::_new_goldie!();
         if let Err(err) = g.assert_template($ctx, $actual) {
@@ -99,6 +117,12 @@ macro_rules! assert_template {
 /// Assert the JSON golden file matches.
 #[macro_export]
 macro_rules! assert_json {
+    ($goldie_path: expr, $actual:expr) => {{
+        let g = $crate::_new_goldie!($goldie_path);
+        if let Err(err) = g.assert_json($actual) {
+            ::std::panic!("{}", err);
+        }
+    }};
     ($actual:expr) => {{
         let g = $crate::_new_goldie!();
         if let Err(err) = g.assert_json($actual) {
@@ -116,6 +140,12 @@ macro_rules! _new_goldie {
     () => {{
         let source_file = $crate::cargo_workspace_dir(env!("CARGO_MANIFEST_DIR")).join(file!());
         let function_path = $crate::_function_path!();
+        $crate::Goldie::new(source_file, function_path)
+    }};
+    ($goldie_path: expr) => {{
+        let source_file = $crate::cargo_workspace_dir(env!("CARGO_MANIFEST_DIR")).join(file!());
+        let function_path = $crate::_function_path!();
+        let function_path = format!("{}::{}", function_path, $goldie_path);
         $crate::Goldie::new(source_file, function_path)
     }};
 }
