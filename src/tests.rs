@@ -39,6 +39,11 @@ fn goldie_assert() {
 }
 
 #[test]
+fn goldie_assert_custom_path() {
+    crate::assert!("goldie_assert-custom", "custom testing...\n");
+}
+
+#[test]
 fn goldie_assert_debug() {
     #[allow(dead_code)]
     #[derive(Debug)]
@@ -54,6 +59,22 @@ fn goldie_assert_debug() {
 
     crate::assert_debug!(&u);
 }
+#[test]
+fn goldie_assert_debug_custom_path() {
+    #[allow(dead_code)]
+    #[derive(Debug)]
+    struct User {
+        name: &'static str,
+        surname: &'static str,
+    }
+
+    let u = User {
+        name: "custom Steve",
+        surname: "custom Harrington",
+    };
+
+    crate::assert_debug!("goldie_assert_debug-custom", &u);
+}
 
 #[test]
 fn goldie_assert_template() {
@@ -63,6 +84,16 @@ fn goldie_assert_template() {
     }
     let ctx = Context { test: "testing..." };
     crate::assert_template!(&ctx, "Such testing...\n");
+}
+
+#[test]
+fn goldie_assert_template_custom_path() {
+    #[derive(Serialize)]
+    struct Context {
+        test: &'static str,
+    }
+    let ctx = Context { test: "custom testing..." };
+    crate::assert_template!("goldie_assert_template-custom", &ctx, "Such custom testing...\n");
 }
 
 #[test]
@@ -79,4 +110,20 @@ fn goldie_assert_json() {
     };
 
     crate::assert_json!(&u);
+}
+
+#[test]
+fn goldie_assert_json_custom_path() {
+    #[derive(Serialize)]
+    struct User {
+        name: &'static str,
+        surname: &'static str,
+    }
+
+    let u = User {
+        name: "custom Steve",
+        surname: "custom Harrington",
+    };
+
+    crate::assert_json!("goldie_assert_json-custom", &u);
 }
